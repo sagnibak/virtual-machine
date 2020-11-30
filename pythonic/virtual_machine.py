@@ -39,13 +39,18 @@ class Jmp:
 
 
 @dataclass(frozen=True)
-class Beq:
+class Print:
     pass
 
 
 @dataclass(frozen=True)
+class Beq:
+    addr: int
+
+
+@dataclass(frozen=True)
 class Bgt:
-    pass
+    addr: int
 
 
 @dataclass(frozen=True)
@@ -56,6 +61,16 @@ class Load:
 @dataclass(frozen=True)
 class Store:
     addr: int
+
+
+@dataclass(frozen=True)
+class Input:
+    pass
+
+
+@dataclass(frozen=True)
+class Mul:
+    pass
 
 
 @dataclass
@@ -85,7 +100,8 @@ class RegisterFile:
         elif idx == 1:
             self.sp = val
         else:
-            eval(f"self.x{idx - 2} = {val}")
+            # eval(f"self.x{idx - 2} = {val}")
+            self.__dict__[f"x{idx - 2}"] = val
 
 
 def execute(code: List[Tuple[str, Optional[int]]]) -> List[int]:
@@ -104,43 +120,32 @@ def execute(code: List[Tuple[str, Optional[int]]]) -> List[int]:
 
         elif instruction == "push":
             # push an integer to the stack
-            maybeNumber = code[registerFile.ip][1]
-            if maybeNumber is None:
-                raise TypeError(
-                    "`push` instruction requires an integer argument.")
-            else:  # we have a number for sure
-                stack.append(maybeNumber)
+            number = to_int(
+                code[registerFile.ip][1], "`push` instruction requires an integer argument.")
+            stack.append(number)
             registerFile.ip += 1
 
         elif instruction == "load":
-            maybeNumber = code[registerFile.ip][1]
-            if maybeNumber is None:
-                raise TypeError(
-                    "`load` instruction requires an address to load from.")
-            else:  # we have an address for sure
-                addr = maybeNumber
-                if 0 <= addr < 10:  # load from register file
-                    stack.append(registerFile[addr])
-                elif addr > 10:
-                    raise NotImplementedError("Need to implement RAM.")
-                else:
-                    raise ValueError(f"Invalid address {addr}")
+            addr = to_int(code[registerFile.ip][1],
+                          "`load` instruction requires an address to load from.")
+            if 0 <= addr < 10:  # load from register file
+                stack.append(registerFile[addr])
+            elif addr > 10:
+                raise NotImplementedError("Need to implement RAM.")
+            else:
+                raise ValueError(f"Invalid address {addr}")
 
             registerFile.ip += 1
 
         elif instruction == "store":
-            maybeNumber = code[registerFile.ip][1]
-            if maybeNumber is None:
-                raise TypeError(
-                    "`store` instruction requires an address to store to.")
-            else:  # we have an address for sure
-                addr = maybeNumber
-                if 0 <= addr < 10:  # store to register file
-                    registerFile[addr] = stack.pop()
-                elif addr > 10:
-                    raise NotImplementedError("Need to implement RAM.")
-                else:
-                    raise ValueError(f"Invalid address {addr}")
+            addr = to_int(code[registerFile.ip][1],
+                          "`store` instruction requires an address to store to.")
+            if 0 <= addr < 10:  # store to register file
+                registerFile[addr] = stack.pop()
+            elif addr > 10:
+                raise NotImplementedError("Need to implement RAM.")
+            else:
+                raise ValueError(f"Invalid address {addr}")
 
             registerFile.ip += 1
 
@@ -152,6 +157,11 @@ def execute(code: List[Tuple[str, Optional[int]]]) -> List[int]:
         elif instruction == "sub":
             # sub the top two ints on the stack (and pop them), push the result
             stack.append(stack.pop() - stack.pop())
+            registerFile.ip += 1
+
+        elif instruction == "mul":
+            # sub the top two ints on the stack (and pop them), push the result
+            stack.append(stack.pop() * stack.pop())
             registerFile.ip += 1
 
         elif instruction == "cmp":
@@ -169,18 +179,32 @@ def execute(code: List[Tuple[str, Optional[int]]]) -> List[int]:
         elif instruction == "beq":
             # if the result of the previous comparison was 0 then branch
             cmp_result = stack.pop()
+            addr = to_int(code[registerFile.ip][1],
+                          "`beq` instruction requires an address to branch to.")
             if cmp_result == 0:
-                registerFile.ip = stack.pop()
+                registerFile.ip = addr
             else:
                 registerFile.ip += 1
 
         elif instruction == "bgt":
             # if the result of the previous comparison was 1 then branch
             cmp_result = stack.pop()
+            addr = to_int(code[registerFile.ip][1],
+                          "`bgt` instruction requires an address to branch to.")
             if cmp_result == 1:
-                registerFile.ip = stack.pop()
+                registerFile.ip = addr
             else:
                 registerFile.ip += 1
+
+        elif instruction == "print":
+            # just print the top of the stack
+            print(stack[-1])
+            registerFile.ip += 1
+
+        elif instruction == "input":
+            # read an integer from stdin and push it to the top of the stack
+            stack.append(int(input(">>> ")))
+            registerFile.ip += 1
 
         elif instruction == "noop":
             # don't do anything (apparently this is useful?)
@@ -190,3 +214,10 @@ def execute(code: List[Tuple[str, Optional[int]]]) -> List[int]:
             raise ValueError(f"Unknown instruction {code[registerFile.ip]}")
 
     return stack
+
+
+def to_int(maybeAddr: Optional[int], msg: str) -> int:
+    if maybeAddr is None:
+        raise ValueError(msg)
+    else:
+        return maybeAddr
