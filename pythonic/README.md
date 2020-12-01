@@ -6,6 +6,26 @@ to the performance of this particular implementation. At every step I have
 chosen simplicity over speed. I plan to implement the same machine in Rust,
 at which point this reference implementation will be useful.
 
+- [Stack Machine](#stack-machine)
+  - [Running](#running)
+  - [Assembly Specification](#assembly-specification)
+
+## Running
+
+You must follow the [Assembly Specification](#assembly-specification) to
+write an assembly file that can then be interpreted by the virtual machine.
+Note that this "assembly" format is really more like human-readable machine
+code so there is no data or text section, no labels (you read that right, no
+labels) _yet_, no other niceties that you may typically expect in an assembly
+language. (I may eventually implement an assembler that resolves labels.)
+
+Assuming your assembly code is in a file called `foo.asm`, then you can do the
+following to execute the code in the VM (please use the appropriate Python 3
+executable on your system):
+```bash
+python run_vm.py foo.asm
+```
+
 ## Assembly Specification
 
 The table below lists all the operations natively supported by the VM. This is
