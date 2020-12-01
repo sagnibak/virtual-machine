@@ -15,9 +15,9 @@ at which point this reference implementation will be useful.
 You must follow the [Assembly Specification](#assembly-specification) to
 write an assembly file that can then be interpreted by the virtual machine.
 Note that this "assembly" format is really more like human-readable machine
-code so there is no data or text section, no labels (you read that right, no
-labels) _yet_, no other niceties that you may typically expect in an assembly
-language. (I may eventually implement an assembler that resolves labels.)
+code so there is no data or text section. For the sake of my sanity I have
+implemented a rudimentary assembler that resolves labels within the same
+assembly file.
 
 Assuming your assembly code is in a file called `foo.asm`, then you can do the
 following to execute the code in the VM (please use the appropriate Python 3
