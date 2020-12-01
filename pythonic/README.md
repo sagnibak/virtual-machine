@@ -7,9 +7,19 @@ chosen simplicity over speed. I plan to implement the same machine in Rust,
 at which point this reference implementation will be useful.
 
 - [Stack Machine](#stack-machine)
+  - [To-dos](#to-dos)
   - [Running](#running)
-  - [Assembly Specification](#assembly-specification)
+  - [Assembly Instructions](#assembly-instructions)
+  - [Registers](#registers)
 
+## To-dos
+
+- [ ] Use a `bytearray` for memory
+  - [ ] Implement read/write
+  - [ ] Handle overflows
+- [ ] Allow data section in assembly
+- [ ] Write a bytecode assembler
+- [ ] Write a bytecode interpreter
 ## Running
 
 You must follow the [Assembly Specification](#assembly-specification) to
@@ -26,7 +36,7 @@ executable on your system):
 python run_vm.py foo.asm
 ```
 
-## Assembly Specification
+## Assembly Instructions
 
 The table below lists all the operations natively supported by the VM. This is
 very minimal, with only as many instructions as required to get a
@@ -46,3 +56,16 @@ very minimal, with only as many instructions as required to get a
 | `print`              | Print the top of the stack **without popping**.                                                                               |
 | `input`              | Read an `int` from `stdin`, push it to the stack.                                                                             |
 | `noop`               | Just increment the instruction pointer. Not sure if it's useful.                                                              |
+
+
+## Registers
+
+There are no dedicated registers, but memory aliasing provides 11 registers.
+The instruction pointer is at address `0`, the stack pointer at `1`, the
+frame pointer at `2`, and the next eight 64-bit words are the general-purpose
+registers `x1` through `x8`. I did not include a separate register bank since
+that only creates additional complexity when loading and storing values without
+adding any speed, since these are not hardware registers. However, using these
+addresses as aliased registers will probably ensure that those memory addresses
+stay in the processor's L1 cache, allowing fast access that way. Note that this
+means there must be at least eleven 64-bit words in memory.
