@@ -54,10 +54,8 @@ def execute(
             addr = to_int(
                 code[getIp()][1], "`store` instruction requires an address to store to."
             )
-            if 0 <= addr < 10:  # store to register file
+            if addr >= 0:
                 mem[addr] = stack.pop()
-            elif addr > 10:
-                raise NotImplementedError("Need to implement RAM.")
             else:
                 raise ValueError(f"Invalid address {addr}")
 
