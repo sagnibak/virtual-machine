@@ -10,7 +10,7 @@ at which point this reference implementation will be useful.
 
 The table below lists all the operations natively supported by the VM. This is
 very minimal, with only as many instructions as required to get a
-(factorial)[factorial.asm] benchmark working.
+[factorial](factorial.asm) benchmark working.
 
 | Assembly Instruction | Description                                                                                                                   |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
