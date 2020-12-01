@@ -43,8 +43,14 @@ def resolveAddrs(line: str) -> Tuple[str, Optional[int]]:
     if len(splitted) == 1:
         return splitted[0], None
     else:
-        arg = splitted[1]
-        if arg[0] == "x":
-            return splitted[0], int(splitted[1][1]) + 2
+        instruction, arg = splitted
+        if arg == "ip":
+            return instruction, 0
+        if arg == "sp":
+            return instruction, 1
+        if arg == "fp":
+            return instruction, 2
+        elif arg[0] == "x":
+            return instruction, int(arg[1]) + 3
         else:
-            return splitted[0], int(splitted[1])
+            return instruction, int(arg)
