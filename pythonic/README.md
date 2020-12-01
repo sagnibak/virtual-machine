@@ -14,9 +14,9 @@ at which point this reference implementation will be useful.
 
 ## To-dos
 
-- [ ] Use a `bytearray` for memory
-  - [ ] Implement read/write
-  - [ ] Handle overflows
+- [x] Use a `bytearray` for memory
+  - [x] Implement read/write
+  - [x] Handle overflows (roll over while storing)
 - [ ] Allow data section in assembly
 - [ ] Write a bytecode assembler
 - [ ] Write a bytecode interpreter
@@ -40,7 +40,8 @@ python run_vm.py foo.asm
 
 The table below lists all the operations natively supported by the VM. This is
 very minimal, with only as many instructions as required to get a
-[factorial](factorial.asm) benchmark working.
+[factorial](factorial.asm) benchmark working. I decided to make it
+little-endian since that makes it somewhat easier to read memory for me.
 
 | Assembly Instruction | Description                                                                                                                   |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
