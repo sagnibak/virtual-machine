@@ -18,12 +18,15 @@ at which point this reference implementation will be useful.
 - [x] Use a `bytearray` for memory
   - [x] Implement read/write
   - [x] Handle overflows (roll over while storing)
-- [ ] Use part of main memory as stack
-- [ ] Use part of main memory as code section
+- [x] Use part of main memory as stack
+  - [x] Test
+- [x] Use part of main memory as code section
+  - [x] Test
 - [ ] Memory-mapped I/O
 - [ ] Allow data section in assembly
-- [ ] Write a bytecode assembler
-- [ ] Write a bytecode interpreter
+- [x] Write a bytecode assembler
+- [x] Write a bytecode interpreter
+- [ ] Read ascii as bytes from stdin
 ## Running
 
 You must follow the [Assembly Specification](#assembly-specification) to
@@ -54,8 +57,8 @@ column below, the other bytes are ignored but should be set to `0`.
 | `halt`               | `0x00`        | Halt program execution.                                                                                                       |
 | `noop`               | `0x01`        | Just increment the instruction pointer. Not sure if it's useful.                                                              |
 | `push arg`           | `0x02`        | Push `arg` to (the top of) the stack.                                                                                         |
-| `load addr`          | `0x03`        | Push the value at address `addr + offset` to the stack, where `addr` is obtained by popping the stack.                        |
-| `store addr`         | `0x04`        | Pop the stack and store it at `addr + offset` to the stack, where `addr` is obtained by popping the stack.                    |
+| `load offset`        | `0x03`        | Push the value at address `addr + offset` to the stack, where `addr` is obtained by popping the stack.                        |
+| `store offset`       | `0x04`        | Pop the stack and store it at `addr + offset` to the stack, where `addr` is obtained by popping the stack.                    |
 | `add`/`sub`/`mul`    | `0x05`-`0x07` | Pop two values, perform the operation, push the result.                                                                       |
 | `cmp`                | `0x20`        | Pop the top two values `t1` and `t2`. Push `sign(t1 - t2)`.                                                                   |
 | `jmp`                | `0x21`        | Jump to the address at the top of the stack.                                                                                  |
@@ -85,7 +88,7 @@ are used as padding. Reads/writes should never happen to addresses `0x0b`
 through `0x0f`.
 
 The code section starts at `0x10` and extends arbitrarily upwards (but it does
-not grow at runtime). The end of the code section is stored in the b. The VM
+not grow at runtime). The end of the code section is not well-defined. The VM
 will keep incrementing the instruction pointer until it hits a jump/branch/halt
 instruction.
 
