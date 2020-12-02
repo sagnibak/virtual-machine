@@ -55,9 +55,7 @@ column below, the other bytes are ignored but should be set to `0`.
 | `noop`               | `0x01`        | Just increment the instruction pointer. Not sure if it's useful.                                                              |
 | `push arg`           | `0x02`        | Push `arg` to (the top of) the stack.                                                                                         |
 | `load addr`          | `0x03`        | Push the value at address `addr + offset` to the stack, where `addr` is obtained by popping the stack.                        |
-| <!--                 | `lptr offset` | `0x13`                                                                                                                        | Push the value at address `addr` to the stack.     | --> |
 | `store addr`         | `0x04`        | Pop the stack and store it at `addr + offset` to the stack, where `addr` is obtained by popping the stack.                    |
-| <!--                 | `sptr offset` | `0x14`                                                                                                                        | Pop (the top of) the stack and store it at `addr`. | --> |
 | `add`/`sub`/`mul`    | `0x05`-`0x07` | Pop two values, perform the operation, push the result.                                                                       |
 | `cmp`                | `0x20`        | Pop the top two values `t1` and `t2`. Push `sign(t1 - t2)`.                                                                   |
 | `jmp`                | `0x21`        | Jump to the address at the top of the stack.                                                                                  |

@@ -2,7 +2,7 @@ from collections import namedtuple
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Union
 
-INT_MOD = 2**64
+INT_MOD = 2 ** 64
 
 
 def execute(
@@ -21,11 +21,11 @@ def execute(
 
     def read_mem(addr: int) -> int:
         """Read a 64-bit word starting at `addr`."""
-        return int.from_bytes(mem[8*addr: 8*addr + 8], "little")
+        return int.from_bytes(mem[8 * addr : 8 * addr + 8], "little")
 
     def write_mem(addr: int, val: int) -> None:
         """Write a 64-bit word `val` starting at `addr`."""
-        mem[8*addr: 8*addr + 8] = (val % INT_MOD).to_bytes(8, "little")
+        mem[8 * addr : 8 * addr + 8] = (val % INT_MOD).to_bytes(8, "little")
 
     def to_int(maybeAddr: Optional[int], msg: str) -> int:
         if maybeAddr is None:

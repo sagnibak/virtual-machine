@@ -11,4 +11,4 @@ args = parser.parse_args()
 with open(args.file, "r") as f:
     code = assemble(f.readlines())
 
-execute(code, stack=[], mem=bytearray(0xffff))
+execute(code, stack=[], mem=bytearray(0xFFFF))
