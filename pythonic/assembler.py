@@ -38,7 +38,6 @@ def findLabels(lines: List[str]) -> Tuple[List[str], List[Tuple[int, str]]]:
             else:
                 lines[i] = None  # type: ignore  # will be filtered out
                 numLinesDeleted += 1
-    print(f"Labels: {labels}")
     return list(filter(lambda x: x is not None, lines)), labels
 
 

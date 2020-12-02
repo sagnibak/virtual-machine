@@ -1,6 +1,6 @@
 import argparse
 from assembler import assemble
-from vm import VM
+from assembly_interpreter import execute
 
 
 parser = argparse.ArgumentParser(description="Run an assembly file.")
@@ -8,9 +8,7 @@ parser.add_argument("file", help="the file to run")
 args = parser.parse_args()
 
 
-with open(args.file, "rb") as f:
-    code = f.read()
+with open(args.file, "r") as f:
+    code = assemble(f.readlines())
 
-mem = bytearray(0x100000)  # 1 MiB
-mem[0x80 : 0x80 + len(code)] = code  # setup the code section
-VM(mem).reset().run()
+execute(code, stack=[], mem=[0 for _ in range(0xFFFF)])

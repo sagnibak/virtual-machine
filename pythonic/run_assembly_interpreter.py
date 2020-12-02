@@ -1,6 +1,6 @@
 import argparse
 from assembler import assemble
-from assembly_interpreter_bytearray_mem import execute
+from assembly_interpreter import execute
 
 
 parser = argparse.ArgumentParser(description="Run an assembly file.")

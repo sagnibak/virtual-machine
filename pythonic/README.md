@@ -22,6 +22,7 @@ at which point this reference implementation will be useful.
   - [x] Test
 - [x] Use part of main memory as code section
   - [x] Test
+- [ ] Linker
 - [ ] Memory-mapped I/O
 - [ ] Allow data section in assembly
 - [x] Write a bytecode assembler
@@ -37,10 +38,17 @@ implemented a rudimentary assembler that resolves labels within the same
 assembly file.
 
 Assuming your assembly code is in a file called `foo.asm`, then you can do the
-following to execute the code in the VM (please use the appropriate Python 3
-executable on your system):
+following to execute the code in using the assembly interpreter
+(please use the appropriate Python 3 executable on your system):
 ```bash
-python run_vm.py foo.asm
+python run_assembly_interpreter.py foo.asm
+```
+This directly interprets the assembly text instead of interpreting bytecode.
+If you want to do the latter, first assemble `foo.asm` to bytecode, then
+run the bytecode:
+```bash
+python assemble_bytecode.py -i foo.asm -o foo.o
+python run_vm.py foo.o
 ```
 
 ## Assembly Instructions

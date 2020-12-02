@@ -2,18 +2,30 @@ from collections import namedtuple
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Union
 
+INT_MOD = 2 ** 64
+
 
 def execute(
-    code: List[Tuple[str, Optional[int]]], stack: List[int], mem: List[int]
+    code: List[Tuple[str, Optional[int]]], stack: List[int], mem: bytearray
 ) -> List[int]:
     def getIp() -> int:
-        return mem[0]
+        # return int.from_bytes(mem[0:8], "little")
+        return read_mem(0)
 
     def setIp(newIp: int) -> None:
-        mem[0] = newIp
+        # mem[0:8] = newIp.to_bytes(8, "little")
+        write_mem(0, newIp)
 
     def incIp() -> None:
-        mem[0] += 1
+        setIp(getIp() + 1)
+
+    def read_mem(addr: int) -> int:
+        """Read a 64-bit word starting at `addr`."""
+        return int.from_bytes(mem[8 * addr : 8 * addr + 8], "little")
+
+    def write_mem(addr: int, val: int) -> None:
+        """Write a 64-bit word `val` starting at `addr`."""
+        mem[8 * addr : 8 * addr + 8] = (val % INT_MOD).to_bytes(8, "little")
 
     def to_int(maybeAddr: Optional[int], msg: str) -> int:
         if maybeAddr is None:
@@ -40,24 +52,36 @@ def execute(
             incIp()
 
         elif instruction == "load":
-            addr = to_int(
+            # addr = to_int(
+            #     code[getIp()][1], "`load` instruction requires an address to load from."
+            # )
+            # if addr >= 0:
+            #     stack.append(read_mem(addr))
+            # else:
+            #     raise ValueError(f"Invalid address {addr}")
+
+            addr = stack.pop()
+            offset = to_int(
                 code[getIp()][1], "`load` instruction requires an address to load from."
             )
-            if addr >= 0:
-                stack.append(mem[addr])
-            else:
-                raise ValueError(f"Invalid address {addr}")
+            stack.append(read_mem(addr + offset))
 
             incIp()
 
         elif instruction == "store":
-            addr = to_int(
+            # addr = to_int(
+            #     code[getIp()][1], "`store` instruction requires an address to store to."
+            # )
+            # if addr >= 0:
+            #     write_mem(addr, stack.pop())
+            # else:
+            #     raise ValueError(f"Invalid address {addr}")
+
+            addr = stack.pop()
+            offset = to_int(
                 code[getIp()][1], "`store` instruction requires an address to store to."
             )
-            if addr >= 0:
-                mem[addr] = stack.pop()
-            else:
-                raise ValueError(f"Invalid address {addr}")
+            write_mem(addr + offset, stack.pop())
 
             incIp()
 
