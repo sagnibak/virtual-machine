@@ -8,6 +8,7 @@ at which point this reference implementation will be useful.
 
 - [Stack Machine](#stack-machine)
   - [To-dos](#to-dos)
+  - [Known Issues](#known-issues)
   - [Running](#running)
   - [Assembly Instructions](#assembly-instructions)
   - [Registers](#registers)
@@ -28,6 +29,11 @@ at which point this reference implementation will be useful.
 - [x] Write a bytecode assembler
 - [x] Write a bytecode interpreter
 - [ ] Read ascii as bytes from stdin
+
+## Known Issues
+
+- [ ] Labels currently cannot be substrings of each other. Use `re.replace` and match on whole word instead of `str.replace`.
+- [ ] I/O is a kludge. MMIO must solve it.
 ## Running
 
 You must follow the [Assembly Specification](#assembly-specification) to
