@@ -11,12 +11,16 @@ at which point this reference implementation will be useful.
   - [Running](#running)
   - [Assembly Instructions](#assembly-instructions)
   - [Registers](#registers)
+  - [Memory](#memory)
 
 ## To-dos
 
 - [x] Use a `bytearray` for memory
   - [x] Implement read/write
   - [x] Handle overflows (roll over while storing)
+- [ ] Use part of main memory as stack
+- [ ] Use part of main memory as code section
+- [ ] Memory-mapped I/O
 - [ ] Allow data section in assembly
 - [ ] Write a bytecode assembler
 - [ ] Write a bytecode interpreter
@@ -70,3 +74,26 @@ adding any speed, since these are not hardware registers. However, using these
 addresses as aliased registers will probably ensure that those memory addresses
 stay in the processor's L1 cache, allowing fast access that way. Note that this
 means there must be at least eleven 64-bit words in memory.
+
+## Memory
+
+As described in the [previous](#registers) section, the lowest eleven words of
+memory (`0x00` through `0x0a`) are used as registers. Then the next five words
+are used as padding. Reads/writes should never happen to addresses `0x0b`
+through `0x0f`.
+
+The code section starts at `0x10` and extends arbitrarily upwards (but it does
+not grow at runtime). The end of the code section is stored in the b. The VM
+will keep incrementing the instruction pointer until it hits a jump/branch/halt
+instruction.
+
+The stack starts at the highest address value and grows downwards. The stack
+pointer holds the address of the top of the stack, which is one less than the
+lowest address that belongs to the stack. `sp` points at the word that will be
+written to during the next push, and one less than the word which will be
+removed during the next pop.
+
+The heap is unstructured, and there is nothing stopping the programmer from
+rewriting the code or stack by taking appropriate pointers. One may implement
+a memory allocator which prevents such shenanigans using appropriate
+implementations of `malloc` and `free`.
