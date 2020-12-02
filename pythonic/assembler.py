@@ -32,7 +32,7 @@ def findLabels(lines: List[str]) -> Tuple[List[str], List[Tuple[int, str]]]:
 
 
 def resolveLabels(lines: List[str], labels: List[Tuple[int, str]]) -> List[str]:
-    for i, line in enumerate(lines):
+    for i in range(len(lines)):
         for labelIdx, label in labels:
             lines[i] = lines[i].replace(label, str(labelIdx))
     return lines

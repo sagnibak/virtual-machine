@@ -52,24 +52,36 @@ def execute(
             incIp()
 
         elif instruction == "load":
-            addr = to_int(
+            # addr = to_int(
+            #     code[getIp()][1], "`load` instruction requires an address to load from."
+            # )
+            # if addr >= 0:
+            #     stack.append(read_mem(addr))
+            # else:
+            #     raise ValueError(f"Invalid address {addr}")
+
+            addr = stack.pop()
+            offset = to_int(
                 code[getIp()][1], "`load` instruction requires an address to load from."
             )
-            if addr >= 0:
-                stack.append(read_mem(addr))
-            else:
-                raise ValueError(f"Invalid address {addr}")
+            stack.append(read_mem(addr + offset))
 
             incIp()
 
         elif instruction == "store":
-            addr = to_int(
+            # addr = to_int(
+            #     code[getIp()][1], "`store` instruction requires an address to store to."
+            # )
+            # if addr >= 0:
+            #     write_mem(addr, stack.pop())
+            # else:
+            #     raise ValueError(f"Invalid address {addr}")
+
+            addr = stack.pop()
+            offset = to_int(
                 code[getIp()][1], "`store` instruction requires an address to store to."
             )
-            if addr >= 0:
-                write_mem(addr, stack.pop())
-            else:
-                raise ValueError(f"Invalid address {addr}")
+            write_mem(addr + offset, stack.pop())
 
             incIp()
 
